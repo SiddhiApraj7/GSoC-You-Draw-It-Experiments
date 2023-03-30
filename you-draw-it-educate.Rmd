@@ -1,0 +1,133 @@
+---
+title: "Creating the ``r params$package_name`` R package"
+author: "Siddhi Apraj"
+date: "25 Feb 2023"
+knit: litr::render
+output: litr::litr_html_document
+params:
+  package_name: "youDrawItEducate" # <-- change this to your package name
+  package_parent_dir: "." # <-- relative to this file's location
+---
+
+<!-- This Rmd file contains all the code needed to define an R package.  Press "Knit" in RStudio or more generally run `litr::render("name-of-this-file.Rmd")` to generate the R package.  Remember that when you want to modify anything about the R package, you should modify this document rather than the package that is outputted.
+-->
+
+## Package setup
+
+We start by specifying the information needed in the DESCRIPTION file of the R package.
+
+```{r package-setup, message=FALSE, results='hide'}
+usethis::create_package(
+  path = ".",
+  fields = list(
+    Package = params$package_name,
+    Version = "0.0.0.9000",
+    Title = "A Package That Allows to Experiment with Regression",
+    Description = "This package allows to conduct experiment with Statistics Regression.",
+    `Authors@R` = person(
+      given = "Siddhi",
+      family = "Apraj",
+      email = "siddhiapraj@gmail.com",
+      role = c("aut", "cre")
+      )
+  )
+)
+usethis::use_mit_license(copyright_holder = "F. Last")
+```
+
+## Now to the package itself
+
+
+
+```{r}
+#' You draw it package App UI
+#' 
+ydtUI <- function(id) {
+
+  navbarPage(
+    "Can 'You Draw It'?",
+
+    tabPanel(
+        title = "Example: Eye Fitting Straight Lines in the Modern Era",
+        tags$head(
+        tags$link(rel = "stylesheet", type = "text/css", href = "css/d3.css")
+        ),
+        fluidRow(
+        column(
+            width = 12,
+            helpText(h4("Use your mouse to fill in the trend in the yellow box region")),
+            d3Output(NS(id,"shinydrawr"), height = "500px"),
+            br(),
+            textOutput(NS(id,"tip")),
+            actionButton(NS(id,"reset"), "Reset")
+        )
+
+        )
+    )
+  )
+}
+```
+
+### Define a function
+
+Let's define a function for our R package:
+
+```{r}
+#' You draw it package App
+#' 
+#' @export 
+library(shiny)
+library(shinyjs)
+library(shinyBS)
+library(r2d3)
+library(tidyverse)
+library(purrr)
+library(gridSVG)
+library(lubridate)
+library(readxl)
+library(renv)
+
+ydtApp <- function(...) {
+    ui <- fluidPage (ydtUI("hist1")
+    )
+    
+    server <- function(input, output, session) {
+        ydtServer("hist1")
+    }
+    
+    shinyApp(ui, server,...)
+}
+```
+
+Code chunks whose first line starts with `#'` are added to the package.
+
+We can try running it.
+
+```{r}
+ydtApp()
+```
+
+That code chunk does not start with `#'`, so it is not added to the package.
+
+Let's write some tests to make sure the function behaves as desired:
+
+```{r}
+testthat::test_that("say_hello works", {
+  testthat::expect_silent(ydtApp())
+})
+```
+
+Code chunks that have one or more lines starting with `test_that(` (or `testthat::test_that(`) are added to the package as tests.
+
+## Documenting the package and building
+
+We finish by running commands that will document, build, and install the package.  It may also be a good idea to check the package from within this file.
+
+```{r}
+litr::document() # <-- use instead of devtools::document()
+# devtools::build()
+# devtools::install()
+# devtools::check(document = FALSE)
+```
+
+
