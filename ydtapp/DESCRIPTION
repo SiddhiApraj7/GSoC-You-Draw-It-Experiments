@@ -20,4 +20,12 @@ Imports:
     lubridate,
     readxl,
     renv,
-    shinyalert
+    shinyalert,
+    jsonlite,
+    shinyFeedback,
+    vroom,
+    roxygen2
+RoxygenNote: 7.2.3
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

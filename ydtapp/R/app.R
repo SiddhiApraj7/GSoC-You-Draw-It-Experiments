@@ -11,12 +11,39 @@ library(readxl)
 library(renv)
 library(shinyFeedback)
 library(shinyalert)
+library(jsonlite)
+library(roxygen2)
 
+#' csvdata' 'data_to_json' 'drawr' 'linearDataFileGen' 'linearDataGen'
+#' linearModel' 'load_file' 'nonLinearDataFileGen' 'nonLinearDataGen'
+#' nonLinearModel' 'ydtApp' 'ydtServer' 'ydtUI'
 
+#' stores csvdata imported from file
+#' csvdata
+#'
+#' @rdname csvdata
 csvdata <- NULL
+
+#' stores linearModel for prediction
+#' linearModel
+#'
+#'- linear model for fitting linear curve using least square regression
+#' @rdname linearModel
 linearModel <- NULL
+
+#' stores nonLinearModel for prediction
+#' nonLinearModel
+#'
+#' nonLinearModel - non linear model for fitting no linear curve using least square regression
+#' @rdname nonLinearModel
 nonLinearModel <- NULL
 
+# Creates a top level UI
+#' ydtUI
+#'
+#' @param id id for namespace
+#'
+#' @export
 ydtUI <- function(id) {
   simulationMode <-
     c("Generate Data" = "generateData", "File Data" = "fileData")
@@ -109,6 +136,13 @@ ydtUI <- function(id) {
 
 
 # Turn a list of data into a json file
+
+#' data_to_json
+#'
+#' @param data data to transform
+#'
+#' @export
+#'
 data_to_json <- function(data) {
   jsonlite::toJSON(
     data,
@@ -120,6 +154,27 @@ data_to_json <- function(data) {
 }
 
 # Redefine drawr function
+#' drawr
+#'
+#' @param data data
+#' @param linear if linear model
+#' @param draw_start start point
+#' @param points_end  end points
+#' @param x_by x increment by
+#' @param free_draw free draw
+#' @param points points to draw
+#' @param aspect_ratio aspect ratio
+#' @param title title of chart
+#' @param x_range range of x axis
+#' @param y_range range of y axis
+#' @param x_lab label for x
+#' @param y_lab label for y
+#' @param drawn_line_color color of line
+#' @param data_tab1_color color of tab
+#' @param x_axis_buffer buffer for x
+#' @param y_axis_buffer buffer for y
+#' @param show_finished show
+#' @param shiny_message_loc message
 drawr <- function(data,
                   linear            = "true",
                   draw_start        = NULL,
@@ -211,6 +266,16 @@ drawr <- function(data,
 }
 
 # Linear Data from File
+#' linearDataFileGen
+#' @param y_xbar y_xbar
+#' @param slope  slope
+#' @param sigma  sigma
+#' @param points_choice points_choice
+#' @param points_end_scale points_choice
+#' @param N number of points
+#' @param x_min min x
+#' @param x_max max x
+#' @param x_by increment by
 linearDataFileGen <-
   function(y_xbar,
            slope,
@@ -274,6 +339,17 @@ linearDataFileGen <-
 
 
 # Linear Data Simulation
+#' linearDataGen
+#'
+#' @param y_xbar y_xbar
+#' @param slope  slope
+#' @param sigma  sigma
+#' @param points_choice points_choice
+#' @param points_end_scale points_choice
+#' @param N number of points
+#' @param x_min min x
+#' @param x_max max x
+#' @param x_by increment by
 linearDataGen <-
   function(y_xbar,
            slope,
@@ -324,6 +400,17 @@ linearDataGen <-
 
 
 # Non Linear Data Simulation
+#' nonLinearDataGen
+#'
+#' @param y_xbar y_xbar
+#' @param slope  slope
+#' @param sigma  sigma
+#' @param points_choice points_choice
+#' @param points_end_scale points_choice
+#' @param N number of points
+#' @param x_min min x
+#' @param x_max max x
+#' @param x_by increment by
 nonLinearDataGen <-
   function(y_xbar,
            slope,
@@ -428,6 +515,17 @@ nonLinearDataGen <-
 
 
 # Non Linear Data from File
+#' Title
+#'
+#' @param y_xbar y_xbar
+#' @param slope  slope
+#' @param sigma  sigma
+#' @param points_choice points_choice
+#' @param points_end_scale points_choice
+#' @param N number of points
+#' @param x_min min x
+#' @param x_max max x
+#' @param x_by increment by
 nonLinearDataFileGen <-
   function(y_xbar,
            slope,
@@ -515,6 +613,10 @@ nonLinearDataFileGen <-
 
 
 
+#' load_file
+#'
+#' @param name name of file
+#' @param path path to read file from
 load_file <- function(name, path) {
   showNotification("click Use File")
   ext <- tools::file_ext(name)
@@ -527,6 +629,9 @@ load_file <- function(name, path) {
 }
 
 # Define server logic required to draw a histogram
+#' ydtServer
+#'
+#' @param id id for module
 ydtServer <- function(id) {
   moduleServer(id, function(input, output, session) {
     modelTypeOut <- reactive({
@@ -848,6 +953,10 @@ ydtServer <- function(id) {
 }
 
 
+#' ydtApp
+#'
+#' @param ... variable parameters
+#'
 ydtApp <- function(...) {
   ui <- fluidPage (ydtUI("hist1"))
 
